@@ -86,6 +86,18 @@ class TestParser:
 
 class TestAST:
     @staticmethod
+    def test(input,expect,num):
+        inputfile = TestUtil.makeSource(input,num)
+        TestAST.checkASTGen("./test/solutions/", inputfile, num)
+        dest = open("./test/solutions/" + str(num) + ".txt","r")
+        line = dest.read()
+        print("==================")
+        print("test case: ", num)
+        print("result: ", line, "\nEXPECT", expect)
+        print("==================")
+        return line == expect 
+    
+    @staticmethod
     def checkASTGen(input,expect,num):
         inputfile = TestUtil.makeSource(input,num)
         dest = open("./test/solutions/" + str(num) + ".txt","w")
