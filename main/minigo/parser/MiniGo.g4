@@ -146,13 +146,13 @@ expr: expr OR expr0 | expr0;
     expr2: expr2 (PLUS | MINUS) expr3 | expr3;
     expr3: expr3 (MULTIPLY | DIVIDE | MODULUS) expr4 | expr4;
     expr4: (MINUS | NOT) expr4 | expr5;
-    expr5: expr5 DOT expr6 | expr5 LBRACK expr RBRACK | expr6;
+    expr5: expr5 DOT IDENTIFIER | expr5 LBRACK expr RBRACK | expr6;
     expr6: subexpr | value;
         subexpr: LPAREN expr RPAREN;
         value: literalvalue | IDENTIFIER | funccall;
             literalvalue: literalvalue_for_arr | arrliteral;
             funccall: IDENTIFIER LPAREN (arglist | ) RPAREN;
-                arglist: expr COMMA arglist | expr |;
+                arglist: expr COMMA arglist | expr |;   
 methodcall: expr accesslist LPAREN arglist RPAREN;
 stmt: vardecl | constdecl | assignstmt | returnstmt | ifstmt | forstmt | breakstmt | continuestmt | callstmt;
     assignstmt: var assignop expr SEMI;
@@ -163,9 +163,9 @@ stmt: vardecl | constdecl | assignstmt | returnstmt | ifstmt | forstmt | breakst
             structaccess: DOT IDENTIFIER;
         assignop: ASSIGN_DECLARE | PLUS_ASSIGN | MINUS_ASSIGN | MULTIPLY_ASSIGN
                     | DIVIDE_ASSIGN | MODULUS_ASSIGN;
-    returnstmt: RETURN (expr | typedecl LPAREN arglist RPAREN |) SEMI ;
+    returnstmt: RETURN (expr|) SEMI ;
     callstmt:( funccall |  methodcall) SEMI;
-    ifstmt: firstifstmt elseifstmtlist (elsestmt)* SEMI;
+    ifstmt: firstifstmt elseifstmtlist (elsestmt | ) SEMI;
         firstifstmt: IF LPAREN expr RPAREN ifstmtbody;
             ifstmtbody:  LBRACE stmtlist RBRACE;
         elseifstmtlist: elseifstmt elseifstmtlist | ;
