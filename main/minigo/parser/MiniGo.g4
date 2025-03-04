@@ -13,11 +13,6 @@ comma_signal = False
 def nextToken(self):
     # Lấy token tiếp theo
     next_token = super().nextToken()
-    print(  " PREVIOUS self.prevTokenType: " + str(self.prevTokenType) + 
-            " TYPE: " + str(type(next_token)) + 
-            "string: " + str(next_token.text) + 
-            " / type: " + str(next_token.type) +
-            " self.comma_signal: " + str(self.comma_signal))  # Kiểm tra kiểu của next_token
     if self.prevTokenType == -1 and next_token.type in {self.NL, self.MULTI_NEWLINE}:
         # print("tin hieu 201")
         self._type = self.SKIP
@@ -30,12 +25,6 @@ def nextToken(self):
                           self.RPAREN, self.RBRACE, self.RBRACK, self.NIL,
                           self.INT, self.FLOAT, self.STRING, self.BOOLEAN}:
         self.comma_signal = True
-    print(  " AFTER    self.prevTokenType: " + str(self.prevTokenType) + 
-            " TYPE: " + str(type(next_token)) + 
-            "string: " + str(next_token.text) + 
-            " / type: " + str(next_token.type) +
-            " self.comma_signal: " + str(self.comma_signal))
-    print("====================================================")
     return next_token
 def emit(self):
     tk = self.type
@@ -55,7 +44,6 @@ def emit(self):
             result.type = self.SEMI
             
             self.comma_signal = False
-            #print("TYPE_IN_NL: " + str(type(result)))
             return result
         else:
             self._type = self.SKIP
@@ -69,7 +57,7 @@ def emit(self):
             result.type = self.SEMI
             
             self.comma_signal = False
-            #print("TYPE_IN_NL: " + str(type(result)))
+
             return result
         else:
             self._type = self.SKIP
@@ -175,7 +163,7 @@ stmt: vardecl | constdecl | assignstmt | returnstmt | ifstmt | forstmt | breakst
         basicforstmt: FOR expr forstmtbody SEMI;
         forstmtbody: LBRACE stmtlist RBRACE;
         init_cond_update_forstmt: FOR init_for SEMI expr SEMI assign forstmtbody SEMI;
-            init_for: assign | VAR VAR (typedecl | ) ASSIGN expr;
+            init_for: assign | VAR IDENTIFIER (typedecl | ) ASSIGN expr;
             assign: var assignop expr;
         rangeforstmt: FOR IDENTIFIER COMMA IDENTIFIER ASSIGN_DECLARE RANGE expr forstmtbody SEMI;
         breakstmt: BREAK SEMI;

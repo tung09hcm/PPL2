@@ -51,6 +51,7 @@ class ASTGeneration(MiniGoVisitor):
         
     def visitNormal_vardecl_without_init(self, ctx: MiniGoParser.Normal_vardecl_without_initContext):
         # normal_vardecl_without_init:  VAR IDENTIFIER typedecl SEMI;
+
         return VarDecl((ctx.IDENTIFIER().getText()), self.visit(ctx.typedecl()), None)
     
     def visitNormal_vardecl_with_init(self, ctx: MiniGoParser.Normal_vardecl_with_initContext):
@@ -88,7 +89,7 @@ class ASTGeneration(MiniGoVisitor):
         # arr_vardecl_without_init: VAR IDENTIFIER arr_dimension_list typedecl SEMI;
         return VarDecl(ctx.IDENTIFIER().getText(), ArrayType(self.visit(ctx.arr_dimension_list()), self.visit(ctx.typedecl())), None)
     
-    def visitArr_dimension_list(self, ctx: MiniGoParser.Arr_dimension_list):
+    def visitArr_dimension_list(self, ctx: MiniGoParser.Arr_dimension_listContext):
         #arr_dimension_list: arr_dimension arr_dimension_list | arr_dimension;
         if ctx.arr_dimension_list():
             return [self.visit(ctx.arr_dimension())] + self.visit(ctx.arr_dimension_list())
@@ -116,7 +117,7 @@ class ASTGeneration(MiniGoVisitor):
         #arrliteral: arr_dimension_list typedecl arrlistvalue;
         return ArrayLiteral(self.visit(ctx.arr_dimension_list()), self.visit(ctx.typedecl()), self.visit(ctx.arrlistvalue()))
     
-    def visitArray_list_value(self, ctx: MiniGoParser.Array_list_valueContext):
+    def visitArray_list_value(self, ctx: MiniGoParser.ArrlistvalueContext):
         #arrlistvalue: LBRACE listvalue RBRACE;
         return self.visit(ctx.listvalue())
     
@@ -246,9 +247,9 @@ class ASTGeneration(MiniGoVisitor):
     def visitParamlist(self, ctx: MiniGoParser.ParamlistContext):
         # paramlist: param_group COMMA paramlist | param_group |;
         if ctx.paramlist():
-            return [self.visit(ctx.param_group())] + self.visit(ctx.paramlist())
+            return self.visit(ctx.param_group()) + self.visit(ctx.paramlist())
         elif ctx.param_group():
-            return [self.visit(ctx.param_group())]
+            return self.visit(ctx.param_group())
         else:
             return []
     
@@ -256,31 +257,41 @@ class ASTGeneration(MiniGoVisitor):
         # param_group: param_mem_list (arr_dimension_list | ) typedecl;
         param_names = self.visit(ctx.param_mem_list())
         param_type = self.visit(ctx.typedecl())
+        print("param_names", param_names)
+        print("param_type:", param_type)
+        print("param_type type:", type(param_type))
+        print("param_type class name:", param_type.__class__.__name__)
 
         # nếu có arr_dimension_list thì nó là mảng
         if ctx.arr_dimension_list():
             param_type = ArrayType(self.visit(ctx.arr_dimension_list()), param_type)
 
-        return [ParamDecl(name, param_type) for name in param_names]
+        param_decl_list = []
+        for name in param_names:
+            param_decl = ParamDecl(str(name), (param_type))
+            param_decl_list.append(param_decl)
+
+        return param_decl_list
+
 
     
     def visitParam_mem_list(self, ctx: MiniGoParser.Param_mem_listContext):
         # param_mem_list: IDENTIFIER COMMA param_mem_list | IDENTIFIER;
         if ctx.param_mem_list():
-            return [Id(ctx.IDENTIFIER().getText())] + self.visit(ctx.param_mem_list())
+            return [(ctx.IDENTIFIER().getText())] + self.visit(ctx.param_mem_list())
         else:
-            return [Id(ctx.IDENTIFIER().getText())]
+            return [(ctx.IDENTIFIER().getText())]
         
     def visitFuncbody(self, ctx: MiniGoParser.FuncbodyContext):
         #funcbody: LBRACE stmtlist RBRACE;
-        return self.visit(ctx.stmtlist())
+        return Block(self.visit(ctx.stmtlist()))
     
     def visitStmtlist(self, ctx: MiniGoParser.StmtlistContext):
         #stmtlist: stmt stmtlist | ;
         if ctx.stmtlist():
-            return Block([self.visit(ctx.stmt())] + self.visit(ctx.stmtlist()))
+            return ([self.visit(ctx.stmt())] + self.visit(ctx.stmtlist()))
         else:
-            return Block([])
+            return ([])
         
     def visitReturntype(self, ctx: MiniGoParser.ReturntypeContext):
         #returntype: (arr_dimension_list | ) typedecl;
@@ -569,4 +580,62 @@ class ASTGeneration(MiniGoVisitor):
     def visitElsestmt(self, ctx: MiniGoParser.ElsestmtContext):
         # elsestmt: ELSE ifstmtbody;
         return Block(self.visit(ctx.ifstmtbody()))
+    
+    def visitForstmt(self, ctx: MiniGoParser.ForstmtContext):
+        #forstmt: basicforstmt | init_cond_update_forstmt | rangeforstmt;
+        if ctx.basicforstmt():
+            return self.visit(ctx.basicforstmt())
+        elif ctx.init_cond_update_forstmt():
+            return self.visit(ctx.init_cond_update_forstmt())
+        elif ctx.rangeforstmt():
+            return self.visit(ctx.rangeforstmt())
+        else:
+            raise Exception("UNKNOWN FORSTMT")
+    
+    def visitBasicforstmt(self, ctx: MiniGoParser.BasicforstmtContext):
+        #basicforstmt: FOR expr forstmtbody SEMI;
+        expr = self.visit(ctx.expr())
+        body = self.visit(ctx.forstmtbody())
+        return ForBasic(expr, body)
+    
+    def visitForstmtbody(self, ctx: MiniGoParser.ForstmtbodyContext):
+        #forstmtbody: LBRACE stmtlist RBRACE;
+        return Block(self.visit(ctx.stmtlist()))
+    
+    def visitInit_cond_update_forstmt(self, ctx):
+        #init_cond_update_forstmt: FOR init_for SEMI expr SEMI assign forstmtbody SEMI;
+        return ForStep(self.visit(ctx.init_for()), self.visit(ctx.expr()), self.visit(ctx.assign()), self.visit(ctx.forstmtbody()))
 
+    def visitInit_for(self, ctx: MiniGoParser.Init_forContext):
+        #init_for: assign | VAR IDENTIFIER (typedecl | ) ASSIGN expr; trick lỏ ????
+        if ctx.assign():
+            return self.visit(ctx.assign())
+        elif ctx.VAR():
+            if ctx.typedecl():
+                return VarDecl(ctx.IDENTIFIER().getText(), self.visit(ctx.typedecl()), self.visit(ctx.expr()))
+            else:
+                return VarDecl(ctx.IDENTIFIER().getText(), None, self.visit(ctx.expr()))
+        else:
+            raise Exception("UNKNOWN INIT_FOR")
+
+    def visitAssign(self, ctx: MiniGoParser.AssignContext):
+        #assign: var assignop expr;
+        return Assign(self.visit(ctx.var()), 
+                      BinaryOp(str(self.visit(ctx.assignop()))[0], self.visit(ctx.var()), self.visit(ctx.expr())))
+        
+    def visitRangeforstmt(self, ctx: MiniGoParser.RangeforstmtContext):
+        #rangeforstmt: FOR IDENTIFIER COMMA IDENTIFIER ASSIGN_DECLARE RANGE expr forstmtbody SEMI;
+        idx = Id(ctx.IDENTIFIER(0).getText())
+        value = Id(ctx.IDENTIFIER(1).getText())
+        arr = self.visit(ctx.expr())
+        loop = self.visit(ctx.forstmtbody())
+        return ForEach(idx, value, arr, loop)
+    
+    def visitBreakstmt(self, ctx: MiniGoParser.BreakstmtContext):
+        #breakstmt: BREAK SEMI;
+        return Break()
+    
+    def visitContinuestmt(self, ctx: MiniGoParser.ContinuestmtContext):
+        #continuestmt: CONTINUE SEMI;
+        return Continue()
+    
