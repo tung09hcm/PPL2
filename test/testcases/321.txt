@@ -1,0 +1,7 @@
+type foo struct {
+            a int;
+            b float;
+        };
+        func (f foo) getA() int {
+            return f.a;
+        };

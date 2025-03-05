@@ -117,7 +117,7 @@ class ASTGeneration(MiniGoVisitor):
         #arrliteral: arr_dimension_list typedecl arrlistvalue;
         return ArrayLiteral(self.visit(ctx.arr_dimension_list()), self.visit(ctx.typedecl()), self.visit(ctx.arrlistvalue()))
     
-    def visitArray_list_value(self, ctx: MiniGoParser.ArrlistvalueContext):
+    def visitArrlistvalue(self, ctx: MiniGoParser.ArrlistvalueContext):
         #arrlistvalue: LBRACE listvalue RBRACE;
         return self.visit(ctx.listvalue())
     
@@ -130,10 +130,10 @@ class ASTGeneration(MiniGoVisitor):
     
     def visitValue_for_arr(self, ctx: MiniGoParser.Value_for_arrContext):
         #value_for_arr: literalvalue_for_arr | arrlistvalue;
-        if ctx.expr():
+        if ctx.literalvalue_for_arr():
             return self.visit(ctx.literalvalue_for_arr())
-        elif ctx.arrliteral():
-            return self.visit(ctx.arrliteral())
+        elif ctx.arrlistvalue():
+            return self.visit(ctx.arrlistvalue())
         else:
             raise Exception("UNKNOWN VALUE_FOR_ARR")
         
@@ -151,7 +151,9 @@ class ASTGeneration(MiniGoVisitor):
         elif ctx.FLOAT_LITERAL():
             return FloatLiteral(float(ctx.FLOAT_LITERAL().getText()))
         elif ctx.STRING_LITERAL():
-            return StringLiteral(ctx.STRING_LITERAL().getText())
+            text = ctx.STRING_LITERAL().getText()
+            # text = text[1:-1]
+            return StringLiteral(text)
         elif ctx.TRUE():
             return BooleanLiteral(True)
         elif ctx.FALSE():
@@ -187,7 +189,7 @@ class ASTGeneration(MiniGoVisitor):
         
     def visitStructinst_field(self, ctx):
         #structinst_field: IDENTIFIER COLON expr;
-        return (Id(ctx.IDENTIFIER().getText()), self.visit(ctx.expr()))
+        return ((ctx.IDENTIFIER().getText()), self.visit(ctx.expr()))
     
     def visitConstdecl(self, ctx: MiniGoParser.ConstdeclContext):
         #constdecl: CONST IDENTIFIER ASSIGN expr SEMI;
@@ -211,9 +213,9 @@ class ASTGeneration(MiniGoVisitor):
     def visitField(self, ctx: MiniGoParser.FieldContext):
         #field: IDENTIFIER (arr_dimension_list | ) typedecl SEMI;
         if ctx.arr_dimension_list():
-            return (Id(ctx.IDENTIFIER().getText()), ArrayType(self.visit(ctx.arr_dimension_list()), self.visit(ctx.typedecl())))
+            return ((ctx.IDENTIFIER().getText()), ArrayType(self.visit(ctx.arr_dimension_list()), self.visit(ctx.typedecl())))
         else:
-            return (Id(ctx.IDENTIFIER().getText()), self.visit(ctx.typedecl()))
+            return ((ctx.IDENTIFIER().getText()), self.visit(ctx.typedecl()))
     
     def visitInterfacedecl(self, ctx: MiniGoParser.InterfacedeclContext):
         #interfacedecl: TYPE IDENTIFIER INTERFACE interface_body SEMI;

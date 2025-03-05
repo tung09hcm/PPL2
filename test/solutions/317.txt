@@ -1,0 +1,1 @@
+Program([VarDecl(a,ArrayType(IntType,[IntLiteral(2)])),VarDecl(b,ArrayType(StringType,[IntLiteral(1),IntLiteral(3),IntLiteral(2),IntLiteral(10)]))])
