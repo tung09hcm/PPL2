@@ -1,0 +1,1 @@
+Program([ConstDecl(omicron,FuncCall(foo,[BinaryOp(ArrayCell(Id(array),[IntLiteral(10)]),+,StringLiteral("test"))]))])

@@ -1,0 +1,3 @@
+func main(){
+            arr[arr[3]+c]:=1;
+        };

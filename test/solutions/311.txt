@@ -1,1 +1,1 @@
-Program([VarDecl(i,IntLiteral(2))])
+Program([VarDecl(i,StringType,StringLiteral("hello"))])

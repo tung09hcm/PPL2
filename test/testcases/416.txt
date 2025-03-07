@@ -1,0 +1,3 @@
+func main(){
+            Toyota.wheels += 2;
+        };

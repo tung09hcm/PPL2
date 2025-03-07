@@ -1,0 +1,1 @@
+Program([ConstDecl(gamma,FuncCall(foo,[BinaryOp(StringLiteral("Hello"),+,IntLiteral(123))]))])

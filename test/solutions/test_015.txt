@@ -1,0 +1,1 @@
+Program([ConstDecl(o,FuncCall(foo,[FieldAccess(Id(person),name),FieldAccess(Id(person),age)]))])

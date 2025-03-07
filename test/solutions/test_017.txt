@@ -1,0 +1,1 @@
+Program([ConstDecl(q,FuncCall(foo,[BinaryOp(StringLiteral("Hello"),+,StringLiteral(" World!"))]))])

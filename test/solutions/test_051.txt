@@ -1,0 +1,1 @@
+Program([ConstDecl(alpha,FuncCall(foo,[BinaryOp(BinaryOp(FuncCall(funcA,[IntLiteral(1)]),-,FuncCall(funcB,[IntLiteral(2)])),+,FuncCall(funcC,[IntLiteral(3)]))]))])

@@ -1,1 +1,1 @@
-Program([ConstDecl(Pi,Id(i))])
+Program([VarDecl(i,IntLiteral(1))])

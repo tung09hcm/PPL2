@@ -1,1 +1,1 @@
-Program([VarDecl(i,StringLiteral("tung")),VarDecl(a,Nil)])
+Program([VarDecl(i,IntType,IntLiteral(0o123))])

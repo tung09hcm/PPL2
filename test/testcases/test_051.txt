@@ -1,0 +1,1 @@
+const alpha = foo( funcA(1) - funcB(2) + funcC(3) ); 

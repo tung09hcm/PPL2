@@ -1,0 +1,1 @@
+const pi = foo( !(!a || !b) ); 

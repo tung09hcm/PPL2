@@ -1,0 +1,1 @@
+const nu = foo( func1(a) && func2(b) || func3(c) ); 

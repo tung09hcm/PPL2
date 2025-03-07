@@ -1,0 +1,1 @@
+Program([ConstDecl(phi,FuncCall(foo,[BinaryOp(ArrayCell(Id(myArray),[IntLiteral(5)]),*,BinaryOp(Id(x),+,Id(y)))]))])

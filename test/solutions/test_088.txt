@@ -1,0 +1,1 @@
+Program([ConstDecl(xi,FuncCall(foo,[BinaryOp(BinaryOp(FieldAccess(Id(structA),fieldA),/,FieldAccess(Id(structB),fieldB)),*,IntLiteral(10))]))])

@@ -1,1 +1,1 @@
-Program([VarDecl(i,FloatLiteral(2.4))])
+Program([VarDecl(i,Id(PPL),IntLiteral(1))])

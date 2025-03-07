@@ -1,1 +1,1 @@
-var i tung;
+var i float = 1.0;

@@ -1,0 +1,12 @@
+type PPL struct{
+            requisite string;
+            min [5] int;
+            max [5][5] float;
+            passed boolean;
+            student Student;
+        };
+        type Student struct{
+            name string;
+            age int;
+            gpa float;
+        };

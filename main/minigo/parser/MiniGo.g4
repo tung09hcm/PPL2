@@ -13,6 +13,7 @@ comma_signal = False
 def nextToken(self):
     # Lấy token tiếp theo
     next_token = super().nextToken()
+
     if self.prevTokenType == -1 and next_token.type in {self.NL, self.MULTI_NEWLINE}:
         # print("tin hieu 201")
         self._type = self.SKIP
@@ -25,6 +26,7 @@ def nextToken(self):
                           self.RPAREN, self.RBRACE, self.RBRACK, self.NIL,
                           self.INT, self.FLOAT, self.STRING, self.BOOLEAN}:
         self.comma_signal = True
+
     return next_token
 def emit(self):
     tk = self.type
@@ -44,6 +46,7 @@ def emit(self):
             result.type = self.SEMI
             
             self.comma_signal = False
+            #print("TYPE_IN_NL: " + str(type(result)))
             return result
         else:
             self._type = self.SKIP
@@ -57,7 +60,7 @@ def emit(self):
             result.type = self.SEMI
             
             self.comma_signal = False
-
+            #print("TYPE_IN_NL: " + str(type(result)))
             return result
         else:
             self._type = self.SKIP
@@ -141,14 +144,18 @@ expr: expr OR expr0 | expr0;
             literalvalue: literalvalue_for_arr | arrliteral;
             funccall: IDENTIFIER LPAREN (arglist | ) RPAREN;
                 arglist: expr COMMA arglist | expr |;   
-methodcall: expr accesslist LPAREN arglist RPAREN;
+methodcall: accesslist DOT IDENTIFIER LPAREN arglist RPAREN;
 stmt: vardecl | constdecl | assignstmt | returnstmt | ifstmt | forstmt | breakstmt | continuestmt | callstmt;
     assignstmt: var assignop expr SEMI;
-        var: IDENTIFIER accesslist | IDENTIFIER;
-        accesslist: access accesslist | access;
-        access: arrayaccess | structaccess;
-            arrayaccess: LBRACK expr RBRACK;
-            structaccess: DOT IDENTIFIER;
+        var :   accesslist 
+            |   IDENTIFIER;
+        accesslist  : accesslist structaccess
+                    | accesslist arrayaccess
+                    | IDENTIFIER arrayaccess 
+                    | IDENTIFIER structaccess 
+                    | expr ;
+            arrayaccess: LBRACK expr RBRACK arrayaccess | LBRACK expr RBRACK;
+            structaccess: DOT IDENTIFIER | DOT IDENTIFIER arrayaccess;
         assignop: ASSIGN_DECLARE | PLUS_ASSIGN | MINUS_ASSIGN | MULTIPLY_ASSIGN
                     | DIVIDE_ASSIGN | MODULUS_ASSIGN;
     returnstmt: RETURN (expr|) SEMI ;

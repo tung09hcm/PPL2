@@ -1,0 +1,1 @@
+Program([ConstDecl(chi,FuncCall(foo,[BinaryOp(Id(x),||,BinaryOp(Id(y),&&,UnaryOp(!,Id(z))))]))])

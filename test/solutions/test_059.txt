@@ -1,0 +1,1 @@
+Program([ConstDecl(iota,FuncCall(foo,[BinaryOp(BinaryOp(IntLiteral(1),+,BinaryOp(IntLiteral(2),*,IntLiteral(3))),-,IntLiteral(4))]))])

@@ -1,0 +1,3 @@
+func main(){
+            arr[-b-c]:= -b+c
+        };

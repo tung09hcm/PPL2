@@ -1,0 +1,1 @@
+const theta = foo( myStruct.methodA() * (a + b) ); 

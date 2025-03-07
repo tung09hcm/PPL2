@@ -1,0 +1,1 @@
+Program([ConstDecl(i,FuncCall(foo,[FieldAccess(Id(obj),field)]))])

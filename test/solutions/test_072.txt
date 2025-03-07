@@ -1,0 +1,1 @@
+Program([ConstDecl(chi,FuncCall(foo,[BinaryOp(StringLiteral("hello"),+,FuncCall(funcA,[IntLiteral(10),IntLiteral(20)]))]))])

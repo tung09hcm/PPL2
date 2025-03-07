@@ -1,0 +1,3 @@
+func main(){
+            bruh.okevjp(b.a(),c().d);
+        };

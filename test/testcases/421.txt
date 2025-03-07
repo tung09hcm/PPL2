@@ -1,0 +1,9 @@
+func sleepy(){
+            if(a>b){
+                print("hj");
+                print("a>b");
+            }else if(a<b){
+                print("jh");
+                print("a<b");}
+        };    
+        

@@ -1,0 +1,1 @@
+const delta = foo( myFunc(x, y) - yourFunc(a, b) ); 

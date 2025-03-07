@@ -1,0 +1,1 @@
+const chi = foo( "hello" + funcA(10, 20) ); 

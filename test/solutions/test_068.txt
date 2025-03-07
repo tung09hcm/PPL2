@@ -1,0 +1,1 @@
+Program([ConstDecl(sigma,FuncCall(foo,[ArrayCell(Id(arr),[Id(index)])]))])

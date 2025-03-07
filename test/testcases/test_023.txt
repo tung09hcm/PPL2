@@ -1,0 +1,1 @@
+const w = foo( arr[x] + arr[y] * arr[z] ); 

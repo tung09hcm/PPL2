@@ -1,0 +1,1 @@
+const phi = foo( arr[5] / obj.field - funcA(a, b) ); 

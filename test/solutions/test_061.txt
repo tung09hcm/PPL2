@@ -1,0 +1,1 @@
+Program([ConstDecl(alpha,FuncCall(foo,[BinaryOp(ArrayCell(Id(arr),[IntLiteral(5)]),+,FieldAccess(Id(obj),field))]))])

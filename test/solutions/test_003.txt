@@ -1,0 +1,1 @@
+Program([ConstDecl(c,FuncCall(foo,[Id(id)]))])

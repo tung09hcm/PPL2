@@ -1,0 +1,1 @@
+Program([ConstDecl(t,FuncCall(foo,[FuncCall(createObject,[IntLiteral(1),IntLiteral(2),IntLiteral(3)])]))])

@@ -1,1 +1,1 @@
-Program([FuncDecl(sum,[ParDecl(a,IntType)],VoidType,Block([]))])
+Program([VarDecl(i,IntType)])

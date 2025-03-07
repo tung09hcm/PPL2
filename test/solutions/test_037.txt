@@ -1,0 +1,1 @@
+Program([ConstDecl(lambda,FuncCall(foo,[BinaryOp(ArrayCell(Id(arr1),[IntLiteral(0)]),+,ArrayCell(Id(arr2),[IntLiteral(1)]))]))])

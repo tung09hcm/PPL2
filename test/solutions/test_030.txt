@@ -1,0 +1,1 @@
+Program([ConstDecl(delta,FuncCall(foo,[FieldAccess(FieldAccess(FieldAccess(Id(myStruct),field1),field2),field3)]))])

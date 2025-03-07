@@ -1,1 +1,1 @@
-Program([VarDecl(x,IntType,IntLiteral(5))])
+Program([VarDecl(i,FloatType)])

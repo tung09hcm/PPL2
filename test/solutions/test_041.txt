@@ -1,0 +1,1 @@
+Program([ConstDecl(omicron,FuncCall(foo,[BinaryOp(BinaryOp(BinaryOp(Id(x),+,Id(y)),&&,Id(z)),||,Id(w))]))])

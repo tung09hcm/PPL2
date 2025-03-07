@@ -1,0 +1,1 @@
+const tau = foo( obj.getValue() + anotherObj.getField() ); 

@@ -1,0 +1,1 @@
+Program([ConstDecl(nu,FuncCall(foo,[BinaryOp(BinaryOp(FuncCall(func1,[Id(a)]),&&,FuncCall(func2,[Id(b)])),||,FuncCall(func3,[Id(c)]))]))])

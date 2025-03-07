@@ -143,11 +143,11 @@ class ASTGeneration(MiniGoVisitor):
         if ctx.DECIMAL_INT():
             return IntLiteral(int(ctx.DECIMAL_INT().getText()))
         elif ctx.BINARY_INT():
-            return IntLiteral(int(ctx.BINARY_INT().getText(), 2))
+            return IntLiteral((ctx.BINARY_INT().getText()))
         elif ctx.OCTAL_INT():
-            return IntLiteral(int(ctx.OCTAL_INT().getText(), 8))
+            return IntLiteral((ctx.OCTAL_INT().getText()))
         elif ctx.HEXADECIMAL_INT():
-            return IntLiteral(int(ctx.HEXADECIMAL_INT().getText(), 16))
+            return IntLiteral((ctx.HEXADECIMAL_INT().getText()))
         elif ctx.FLOAT_LITERAL():
             return FloatLiteral(float(ctx.FLOAT_LITERAL().getText()))
         elif ctx.STRING_LITERAL():
@@ -234,10 +234,12 @@ class ASTGeneration(MiniGoVisitor):
         
     def visitMethod(self, ctx: MiniGoParser.MethodContext): #??????
         #method: IDENTIFIER LPAREN paramlist RPAREN (returntype | ) SEMI;
+        paramlist = self.visit(ctx.paramlist())  # -> List[ParamDecl]
+        typelist = [param.parType for param in paramlist]  # -> List[Type]
         if ctx.returntype():
-            return Prototype((ctx.IDENTIFIER().getText()), self.visit(ctx.paramlist()), self.visit(ctx.returntype()))
+            return Prototype((ctx.IDENTIFIER().getText()), typelist, self.visit(ctx.returntype()))
         else:
-            return Prototype((ctx.IDENTIFIER().getText()), self.visit(ctx.paramlist()), VoidType())
+            return Prototype((ctx.IDENTIFIER().getText()), typelist, VoidType())
         
     def visitFuncdecl(self, ctx: MiniGoParser.FuncdeclContext):
         #funcdecl: FUNC IDENTIFIER LPAREN paramlist RPAREN (returntype | ) funcbody SEMI;
@@ -360,7 +362,9 @@ class ASTGeneration(MiniGoVisitor):
         
     def visitExpr2(self, ctx: MiniGoParser.Expr2Context):
         #expr2: expr2 (PLUS | MINUS) expr3 | expr3;
+        
         if ctx.PLUS():
+            print("visitEXPR2 plus case")
             return BinaryOp("+", self.visit(ctx.expr2()), self.visit(ctx.expr3()))
         elif ctx.MINUS():
             return BinaryOp("-", self.visit(ctx.expr2()), self.visit(ctx.expr3()))
@@ -389,8 +393,9 @@ class ASTGeneration(MiniGoVisitor):
         
     def visitExpr5(self, ctx: MiniGoParser.Expr5Context):
         #expr5: expr5 DOT IDENTIFIER | expr5 LBRACK expr RBRACK | expr6;
+        
         if ctx.DOT():
-            return FieldAccess(self.visit(ctx.expr5()), (ctx.IDENTIFIER().getText()))
+            return FieldAccess(self.visit(ctx.expr5()), ctx.IDENTIFIER().getText())
         elif ctx.LBRACK():
             return ArrayCell(self.visit(ctx.expr5()), [self.visit(ctx.expr())])
         else:
@@ -441,9 +446,9 @@ class ASTGeneration(MiniGoVisitor):
             return []
         
     def visitMethodcall(self, ctx: MiniGoParser.MethodcallContext):
-        #methodcall: expr accesslist LPAREN arglist RPAREN;
-        return MethCall(self.visit(ctx.expr()), ctx.IDENTIFIER().getText(), self.visit(ctx.arglist()))
-        
+        #methodcall: accesslist DOT IDENTIFIER LPAREN arglist RPAREN;
+        return MethCall((self.visit(ctx.accesslist())), ctx.IDENTIFIER().getText(), self.visit(ctx.arglist()))
+    
     def visitStmt(self, ctx: MiniGoParser.StmtContext):
         #stmt: vardecl | constdecl | assignstmt | returnstmt | ifstmt | forstmt | breakstmt | continuestmt | callstmt;
         if ctx.vardecl():
@@ -469,38 +474,74 @@ class ASTGeneration(MiniGoVisitor):
         
     def visitAssignstmt(self, ctx: MiniGoParser.AssignstmtContext):
         #assignstmt: var assignop expr SEMI;
-        return Assign(self.visit(ctx.var()), self.visit(ctx.expr()))
+        print("ASSIGN STATEMENT")
+        if(str(self.visit(ctx.assignop())) != ":="):
+            return Assign(self.visit(ctx.var()), 
+                      BinaryOp(str(self.visit(ctx.assignop()))[0], self.visit(ctx.var()), self.visit(ctx.expr())))
+        else: return Assign(self.visit(ctx.var()), self.visit(ctx.expr()))
     
     def visitVar(self, ctx: MiniGoParser.VarContext):
-        #var: IDENTIFIER accesslist | IDENTIFIER;
+        # var :   accesslist 
+        #     |   IDENTIFIER;
         if ctx.accesslist():
-            return ArrayCell(Id(ctx.IDENTIFIER().getText()), self.visit(ctx.accesslist()))
+            return self.visit(ctx.accesslist())
         else:
             return Id(ctx.IDENTIFIER().getText())
-    
+
     def visitAccesslist(self, ctx: MiniGoParser.AccesslistContext):
-        #accesslist: access accesslist | access;
-        if ctx.accesslist():
-            return [self.visit(ctx.access())] + self.visit(ctx.accesslist())
-        else:
-            return [self.visit(ctx.access())]
-        
-    def visitAccess(self, ctx: MiniGoParser.AccessContext):
-        #access: arrayaccess | structaccess;
-        if ctx.arrayaccess():
-            return self.visit(ctx.arrayaccess())
+        # accesslist  : accesslist structaccess
+        #             | accesslist arrayaccess
+        #             | IDENTIFIER arrayaccess 
+        #             | IDENTIFIER structaccess
+        #             | expr ;
+        if ctx.structaccess() and ctx.accesslist():
+            # lấy list tạo fieldaccess
+            list_struct_access = self.visit(ctx.structaccess())
+
+            # Bắt đầu từ Id của phần tử đầu tiên
+            result = self.visit(ctx.accesslist())
+
+            # Tạo các FieldAccess lồng nhau
+            for field in list_struct_access[0:]:
+                result = FieldAccess(result, field)
+
+            return result
+            #return FieldAccess(self.visit(ctx.accesslist()), self.visit(ctx.structaccess()))
+        elif ctx.arrayaccess() and ctx.accesslist():
+            return ArrayCell(self.visit(ctx.accesslist()), self.visit(ctx.arrayaccess()))
+        elif ctx.arrayaccess() and ctx.IDENTIFIER():
+            return ArrayCell(Id(ctx.IDENTIFIER().getText()), self.visit(ctx.arrayaccess()))
         elif ctx.structaccess():
-            return self.visit(ctx.structaccess())
+            # lấy list tạo fieldaccess
+            list_struct_access = self.visit(ctx.structaccess())
+
+            # Bắt đầu từ Id của phần tử đầu tiên
+            result = Id(ctx.IDENTIFIER().getText())
+
+            # Tạo các FieldAccess lồng nhau
+            for field in list_struct_access[0:]:
+                result = FieldAccess(result, field)
+
+            return result
+
+        elif ctx.expr():
+            return self.visit(ctx.expr())
         else:
-            raise Exception("UNKNOWN ACCESS")
+            raise Exception("UNKNOWN ACCESSLIST")
         
     def visitArrayaccess(self, ctx: MiniGoParser.ArrayaccessContext):
-        #arrayaccess: LBRACK expr RBRACK;
-        return self.visit(ctx.expr())
+        #arrayaccess: LBRACK expr RBRACK arrayaccess | LBRACK expr RBRACK;
+        if ctx.arrayaccess():
+            return [self.visit(ctx.expr())] + self.visit(ctx.arrayaccess())
+        else:
+            return [self.visit(ctx.expr())]
     
     def visitStructaccess(self, ctx: MiniGoParser.StructaccessContext):
-        #structaccess: DOT IDENTIFIER;
-        return Id(ctx.IDENTIFIER().getText())
+        #structaccess: DOT IDENTIFIER | DOT IDENTIFIER arrayaccess;
+        if ctx.arrayaccess():
+            return [ctx.IDENTIFIER().getText()] + self.visit(ctx.arrayaccess())
+        else:
+            return [ctx.IDENTIFIER().getText()]
     
     def visitAssignop(self, ctx: MiniGoParser.AssignopContext):
         #assignop: ASSIGN_DECLARE | PLUS_ASSIGN | MINUS_ASSIGN | MULTIPLY_ASSIGN| DIVIDE_ASSIGN | MODULUS_ASSIGN;
@@ -622,8 +663,11 @@ class ASTGeneration(MiniGoVisitor):
 
     def visitAssign(self, ctx: MiniGoParser.AssignContext):
         #assign: var assignop expr;
-        return Assign(self.visit(ctx.var()), 
-                      BinaryOp(str(self.visit(ctx.assignop()))[0], self.visit(ctx.var()), self.visit(ctx.expr())))
+        print("VISIT ASSIGN")
+        if (self.visit(ctx.assignop()) != ":="):
+            return Assign(self.visit(ctx.var()), 
+                        BinaryOp(str(self.visit(ctx.assignop()))[0], self.visit(ctx.var()), self.visit(ctx.expr())))
+        else: return Assign(self.visit(ctx.var()), self.visit(ctx.expr()))
         
     def visitRangeforstmt(self, ctx: MiniGoParser.RangeforstmtContext):
         #rangeforstmt: FOR IDENTIFIER COMMA IDENTIFIER ASSIGN_DECLARE RANGE expr forstmtbody SEMI;

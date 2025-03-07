@@ -1,0 +1,3 @@
+func main(){
+            const a = (a+b*b)/a*b;
+        };

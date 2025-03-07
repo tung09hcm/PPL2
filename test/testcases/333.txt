@@ -1,0 +1,10 @@
+type PPL struct{
+            requisite string;
+        };
+        func (p PPL) getRequisite() string{
+            return p.requisite;
+        };
+        func main(){
+            var a PPL = PPL{requisite: "Math"};
+            a.getRequisite();
+        };

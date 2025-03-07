@@ -1,0 +1,3 @@
+func main(){
+            student.classroom.teacher.name := "Mr. Bean";
+        };

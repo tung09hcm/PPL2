@@ -1,0 +1,4 @@
+func testfor() {
+            for var i int=2;i<2;i-=1 {
+            };
+        };

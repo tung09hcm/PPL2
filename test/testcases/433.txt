@@ -1,0 +1,5 @@
+func testForLoop(){
+            for index,value := range a[1][2].b[3]{
+                // statements
+            }
+        };

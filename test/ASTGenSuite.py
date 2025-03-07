@@ -206,3 +206,20 @@ class ASTGenSuite(unittest.TestCase):
         ]))
         print("EXPECT:", expect)
         self.assertTrue(TestAST.checkASTGen(input, expect, 322))
+        
+    def test_declare_struct_method2(self):
+        input = """func (s student) getAge() int {
+            return s.age
+        };"""
+        expect = str(Program([
+            MethodDecl("s",Id("student"),FuncDecl("getAge", [], IntType(), Block([Return(FieldAccess(Id("s"), "age"))])))
+        ]))
+        self.assertTrue(TestAST.checkASTGen(input, expect, 323))
+        
+    def test_call_method_of_a_struct(self):
+        input = """func testStruct(){s.getAge();};"""
+        expect = str(Program([
+            FuncDecl("testStruct",[],VoidType(),Block([MethCall(Id("s"),"getAge",[])]))
+        ]))
+        print("EXPECT: ", expect)
+        self.assertTrue(TestAST.checkASTGen(input, expect, 324))

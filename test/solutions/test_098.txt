@@ -1,0 +1,1 @@
+Program([ConstDecl(omega,FuncCall(foo,[UnaryOp(!,BinaryOp(ArrayCell(Id(arr),[IntLiteral(0)]),+,ArrayCell(Id(arr),[IntLiteral(1)])))]))])

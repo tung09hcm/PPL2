@@ -1,1 +1,1 @@
-Program([VarDecl(i,IntType)])
+Program([VarDecl(i,BoolType,BooleanLiteral(true))])

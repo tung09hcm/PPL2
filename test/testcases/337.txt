@@ -1,0 +1,4 @@
+type PPL interface{
+            getRequisite() string;
+            setRequisite(req string);
+        };

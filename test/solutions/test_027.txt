@@ -1,0 +1,1 @@
+Program([ConstDecl(alpha,FuncCall(foo,[BinaryOp(BinaryOp(Id(a),%,Id(b)),/,BinaryOp(Id(c),-,Id(d)))]))])

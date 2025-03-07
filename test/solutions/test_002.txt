@@ -1,0 +1,1 @@
+Program([ConstDecl(b,FuncCall(foo,[FloatLiteral(1.0),BooleanLiteral(true),BooleanLiteral(false),Nil,StringLiteral("string")]))])

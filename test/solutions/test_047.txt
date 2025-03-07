@@ -1,0 +1,1 @@
+Program([ConstDecl(phi,FuncCall(foo,[BinaryOp(Id(null),==,Id(undefined))]))])

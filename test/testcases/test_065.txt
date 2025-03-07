@@ -1,0 +1,1 @@
+const omicron = foo( array[10] + "test" ); 

@@ -1,0 +1,1 @@
+Program([ConstDecl(h,FuncCall(foo,[ArrayCell(Id(arr),[IntLiteral(10)])]))])

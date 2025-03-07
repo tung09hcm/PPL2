@@ -1,0 +1,1 @@
+Program([ConstDecl(pi,FuncCall(foo,[BinaryOp(BinaryOp(FloatLiteral(3.14),*,Id(radius)),*,Id(radius))]))])

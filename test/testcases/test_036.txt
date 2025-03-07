@@ -1,0 +1,1 @@
+const kappa = foo( (a + b) * (c - d) ); 

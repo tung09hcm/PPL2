@@ -1,0 +1,1 @@
+Program([ConstDecl(x,FuncCall(foo,[BinaryOp(BinaryOp(StringLiteral("abc"),+,StringLiteral("def")),+,StringLiteral("ghi"))]))])

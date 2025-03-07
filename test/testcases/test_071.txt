@@ -1,0 +1,1 @@
+const phi = foo( myArray[5] * (x + y) ); 

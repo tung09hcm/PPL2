@@ -1,1 +1,1 @@
-Program([VarDecl(i,Id(tung))])
+Program([VarDecl(i,FloatType,FloatLiteral(1.0))])

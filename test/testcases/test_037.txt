@@ -1,0 +1,1 @@
+const lambda = foo( arr1[0] + arr2[1] ); 

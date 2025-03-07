@@ -1,0 +1,3 @@
+func main(){
+            car[0][f].brand := "Milkita";
+        };

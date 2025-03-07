@@ -2,7 +2,7 @@ import sys,os,traceback
 sys.path.append('./test/')
 import subprocess
 import unittest
-from antlr4 import *
+from antlr4 import * # type: ignore
 
 #Make sure that ANTLR_JAR is set to antlr-4.9.2-complete.jar
 ANTLR_JAR = './antlr-4.9.2-complete.jar'
@@ -59,6 +59,14 @@ def main(argv):
             test(suite)
         elif argv[1] == 'ASTGenSuite':
             from ASTGenSuite import ASTGenSuite
+            suite = unittest.TestLoader().loadTestsFromTestCase(ASTGenSuite)
+            test(suite)
+        elif argv[1] == 'ASTGenSuite2':
+            from ASTGenSuite2 import ASTGenSuite
+            suite = unittest.TestLoader().loadTestsFromTestCase(ASTGenSuite)
+            test(suite)
+        elif argv[1] == 'SingleASTGenSuite':
+            from SingleASTGenSuite import ASTGenSuite
             suite = unittest.TestLoader().loadTestsFromTestCase(ASTGenSuite)
             test(suite)
         else:

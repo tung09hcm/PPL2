@@ -1,0 +1,1 @@
+Program([ConstDecl(eta,FuncCall(foo,[BinaryOp(FieldAccess(Id(struct1),field1),-,FieldAccess(Id(struct2),field2))]))])

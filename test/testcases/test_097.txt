@@ -1,0 +1,1 @@
+const psi = foo( obj.methodA(a, b) + funcB(x) * y ); 

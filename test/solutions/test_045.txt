@@ -1,0 +1,1 @@
+Program([ConstDecl(tau,FuncCall(foo,[BinaryOp(BinaryOp(StringLiteral("Test "),+,Id(count)),+,StringLiteral(" cases"))]))])

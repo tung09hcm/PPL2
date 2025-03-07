@@ -1,0 +1,13 @@
+func main(){
+            if(!warZone){
+                if(!pandemic){
+                    print("Peaceful");
+                }else if(!hunger){
+                    if(!lockdown){
+                        print("Stay home");
+                    }else{
+                        print("Stay safe");
+                    }
+                }
+            }
+        };

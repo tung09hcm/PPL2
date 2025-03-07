@@ -1,1 +1,1 @@
-const i = 2;
+var i int = 0x123;

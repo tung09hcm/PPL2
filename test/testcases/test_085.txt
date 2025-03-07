@@ -1,0 +1,1 @@
+const lambda = foo( x + y - z * obj.methodE(10, 20) ); 
